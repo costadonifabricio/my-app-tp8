@@ -1,4 +1,4 @@
-import { StyleSheet, Text, Pressable } from "react-native";
+import { StyleSheet, Text, Pressable, View } from "react-native";
 import * as React from "react";
 import Animated, {
   useSharedValue,
@@ -7,30 +7,36 @@ import Animated, {
 } from "react-native-reanimated";
 
 export default function Inicio() {
-  // Estos son los valores que le pongo para las animaciones
-  const deslizamiento = useSharedValue(-250);
-  const colorFondo = useSharedValue(0);
-  const opacidad = useSharedValue(1);
+  // estos valores serian para las animaciones
+  const deslizamiento = useSharedValue(-250); // desplazamiento inicial para la entrada
+  const colorFondo = useSharedValue(0); // el color de fondo
+  const opacidad = useSharedValue(1); // la opacidad del mensaje
+  const escala = useSharedValue(0.8); // la escala del mensaje para una animación de zoom
 
-  // useEffect que controla la animación para el deslizamiento al cargar la pantalla
+  // un useEffect para manejar la animación al cargar la pantalla
   React.useEffect(() => {
-    deslizamiento.value = withTiming(0);
+    deslizamiento.value = withTiming(0, { duration: 1000 }); 
+    escala.value = withTiming(1, { duration: 1000 });
   }, []);
 
-  // Aca Manejo el evento al presionar el botón
+  // aqui manejo el evento de presionar en el botón
   const manejarPresion = () => {
-    colorFondo.value = withTiming(colorFondo.value === 0 ? 1 : 0);
-    opacidad.value = withTiming(opacidad.value === 1 ? 0 : 1);
+    colorFondo.value = withTiming(colorFondo.value === 0 ? 1 : 0, { duration: 500 }); 
+    opacidad.value = withTiming(opacidad.value === 1 ? 0 : 1, { duration: 500 }); 
   };
 
+  // este es el estilo animado para la bienvenida
   const estiloAnimado = useAnimatedStyle(() => ({
-    transform: [{ translateY: deslizamiento.value }],
+    transform: [
+      { translateY: deslizamiento.value },
+      { scale: escala.value }
+    ],
     opacity: opacidad.value,
   }));
 
-  // Colores para el fondo de la pantalla
+  // el estilo animado para el fondo
   const estiloFondo = useAnimatedStyle(() => ({
-    backgroundColor: colorFondo.value === 0 ? "#A8D5BA" : "#87CBB9",
+    backgroundColor: colorFondo.value === 0 ? "#A8D5BA" : "#87CBB9", // cambia entre dos colores para el fondo
   }));
 
   return (
@@ -45,7 +51,7 @@ export default function Inicio() {
   );
 }
 
-// Estilos para el componente
+// los estilos para el componente
 const styles = StyleSheet.create({
   contenedor: {
     flex: 1,
@@ -54,30 +60,33 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   texto: {
-    fontSize: 24,
+    fontSize: 26, 
     fontWeight: "bold",
     color: "#333",
+    textAlign: "center",
+    marginBottom: 10,
   },
   caja: {
-    marginBottom: 20,
+    marginBottom: 30,
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 12, 
     backgroundColor: "#FFFFFF",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 6 }, 
     shadowOpacity: 0.3,
-    shadowRadius: 4.65,
-    elevation: 8,
+    shadowRadius: 10,
+    elevation: 12, 
   },
   boton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
     backgroundColor: "#007BFF",
-    borderRadius: 5,
+    borderRadius: 8,
+    elevation: 5,
   },
   textoBoton: {
     color: "#FFF",
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
   },
 });
